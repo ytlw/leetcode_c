@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "main{,[0-9]}.in": "plaintext_gbk"
+    },
+    "[plaintext_gbk]": {
+        "files.encoding": "gbk"
+    }
+}
