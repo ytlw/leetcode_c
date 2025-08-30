@@ -1,7 +1,7 @@
 ### Usage
 
 ```
-cp -r template/mains 
+cp -r template/mains/ .
 ```
 for windows:
 
