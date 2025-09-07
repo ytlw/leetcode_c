@@ -6,9 +6,4 @@ struct ListNode {
     struct ListNode* next;
 };
 
-struct ListNodeFactory {
-
-};
-
-
 #endif //__LISTNODE__

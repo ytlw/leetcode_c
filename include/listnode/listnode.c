@@ -1,6 +1,9 @@
 #include "listnode.h"
-#include <stdlib.h>
-#include <read_input.h>
+#include <read_from_file/read_input.h>
+
+void printLine(stream* s) {
+    printf("%s", s->buf);
+}
 
 void generateListNode(struct ListNode* head, stream* ps) {
     if (!read(ps)) {
