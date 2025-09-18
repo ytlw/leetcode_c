@@ -20,7 +20,12 @@ struct ListNode* generateListNode(stream* ps) {
         char* ch = ps->buf;
 
         int i = 0;
-        for (; ch[i] != '\0'; i++) {
+
+        // 出现下列情况表示当前链表结束
+        // ]]
+        // ],
+        // 遍历完字符串
+        for (; ch[i] != '\0' && (i == 0 || (ch[i - 1] != ']' && ch[i - 1] != '}') || (ch[i] != ',' && ch[i] != ch[i - 1])); i++) {
             if (ch[i] == '{' || ch[i] == '[' || ch[i] == ' ') {
                 continue;
             }
@@ -53,7 +58,7 @@ struct ListNode* generateListNode(stream* ps) {
 }
 
 struct ListNode** generateListNodeArray(stream* ps) {
-    struct ListNode* ans = NULL;
+    struct ListNode** ans = NULL;
     int status = read(ps);
     if (status == END) {
         return NULL;
