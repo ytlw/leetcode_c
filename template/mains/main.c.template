@@ -3,10 +3,8 @@
 #include <string.h>
 #include <listnode/listnode.c>
 #include <read_from_file/read_input.h>
-#include <uthash/uthash.h>
 
-
-struct ListNode* merge2Lists(struct ListNode* list1, struct ListNode* list2) {
+struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2) {
     if (list1 == NULL) {
         return list2;
     }
@@ -48,62 +46,21 @@ struct ListNode* merge2Lists(struct ListNode* list1, struct ListNode* list2) {
     return head;
 }
 
-struct ListNode* mergeKLists(struct ListNode** lists, int listsLen) {
-    struct ListNode* ans = (struct ListNode*)malloc(sizeof(struct ListNode));
-
-    int len = listsLen;
-    int pos = 0;
-    while (len > 1) {
-        for (int i = 0; i < len; i += 2) {
-            if (i == len - 1) {
-                lists[pos] = lists[i];
-            } else {
-                lists[pos] = merge2Lists(lists[i], lists[i + 1]);;
-            }
-
-            pos++;
-        }
-
-        len = pos;
-        pos = 0;
-    }
-
-    return ans;
-}
-struct hash_entry {
-    int id;
-    char name[10];
-    UT_hash_handle hh;
-};
-
-struct hash_entry* users = NULL;
-
-void add_user(struct hash_entry* s) {
-    HASH_ADD_INT(users, id, s);
-}
-
-struct hash_entry* find_user(int user_id) {
-    struct hash_entry* s;
-    HASH_FIND_INT(users, &user_id, s);
-    return s;
-}
-
-void delete_user(struct hash_entry* user) {
-    HASH_DEL(users, user);
-}
-
 int main(void) {
     stream _stream;
     stream* ps = &_stream;
     initStream(ps);
 
-    while (read(ps)) {
+    struct ListNode* head1 = generateListNode(ps);
+    struct ListNode* head2 = generateListNode(ps);
 
-    }
+    struct ListNode* ans = mergeTwoLists(head1, head2);
 
+    printListNode(ans);
+
+    freeListNode(head1);
+    freeListNode(head2);
+    freeListNode(ans);
     closeStream(ps);
-
-
-
     return 0;
 }
