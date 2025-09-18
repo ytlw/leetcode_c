@@ -1,12 +1,10 @@
 #include "listnode.h"
 #include <read_from_file/read_input.h>
 
-void printLine(stream* s) {
-    printf("%s", s->buf);
-}
 
-void generateListNode(struct ListNode* head, stream* ps) {
-    if (!read(ps)) {
+
+void generateListNode(struct ListNode* head, stream* ps, int* pos) {
+    if (head == NULL || !read(ps)) {
         return;
     }
 
@@ -46,11 +44,9 @@ void generateListNode(struct ListNode* head, stream* ps) {
     if (pos != NULL) {
         *pos = i + 1;
     }
-
-    return head;
 }
 
-struct ListNode* newListNode2(char ch[], stream* ps) {
+struct ListNode* newListNode2(char ch[], stream* ps, int* pos) {
 
     int v = 0;
     int sign = 1;

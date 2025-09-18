@@ -1,0 +1,46 @@
+#include <uthash/uthash.h>
+#include <stdio.h>
+
+typedef struct {
+    int id;
+    char name[10];
+    UT_hash_handle hh;
+} hash_entry;
+
+hash_entry* users = NULL;
+
+void add_user(hash_entry* s) {
+    HASH_ADD_INT(users, id, s);
+}
+
+hash_entry* find_user(int user_id) {
+    hash_entry* s;
+    HASH_FIND_INT(users, &user_id, s);
+    return s;
+}
+
+void delete_user(hash_entry* user) {
+    HASH_DEL(users, user);
+}
+
+int main(int argc, char const* argv[]) {
+    hash_entry* user = (hash_entry*)malloc(sizeof(hash_entry));
+    user->id = 0;
+    strcpy(user->name, "luwei");
+    add_user(user);
+
+    hash_entry* user_found = find_user(0);
+    if (user == user_found) {
+        printf("tied luwei up\n");
+    }
+
+    delete_user(user);
+
+    user_found = find_user(0);
+    if (user_found == NULL) {
+        printf("tied JK luwei up\n");
+    }
+
+    return 0;
+}
+
