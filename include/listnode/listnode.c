@@ -1,132 +1,55 @@
 #include "listnode.h"
 #include <read_from_file/read_input.h>
 
+struct ClosureListNode {
+    void (*func) (stream* ps);
+    struct ListNode* head;
+};
 
-
-void generateListNode(struct ListNode* head, stream* ps, int* pos) {
-    if (head == NULL || !read(ps)) {
-        return;
-    }
-
-    int v = 0;
-    int sign = 1;
-    char* ch = ps->buf;
-    struct ListNode* cur = head;
-    int i = 0;
-    for (; ch[i] != '}' && ch[i] != '\0'; i++) {
-        if (ch[i] == '{' || ch[i] == ' ') {
-            continue;
-        }
-
-        if (ch[i] == ',') {
-            struct ListNode* tmp = (struct ListNode*)malloc(sizeof(struct ListNode));
-            tmp->val = v * sign;
-            tmp->next = NULL;
-            v = 0;
-            sign = 1;
-            if (head == NULL) {
-                head = tmp;
-            } else {
-                cur->next = tmp;
-                cur = tmp;
-            }
-            continue;
-        }
-
-        if (ch[i] == '-') {
-            sign = -1;
-            continue;
-        }
-
-        v = v * 10 + ch[i] - '0';
-    }
-
-    if (pos != NULL) {
-        *pos = i + 1;
-    }
-}
-
-struct ListNode* newListNode2(char ch[], stream* ps, int* pos) {
+struct ListNode* generateListNode(stream* ps) {
+    struct ListNode* ans = NULL, * cur = NULL;
 
     int v = 0;
     int sign = 1;
-    struct ListNode* head = NULL;
-    struct ListNode* cur = head;
-    int i = 0;
-    for (; ch[i] != '}' && ch[i] != '\0'; i++) {
-        if (ch[i] == '{' || ch[i] == ' ') {
-            continue;
-        }
+    int status = read(ps);
+    if (status == END) {
+        return NULL;
+    }
 
-        if (ch[i] == ',') {
-            struct ListNode* tmp = (struct ListNode*)malloc(sizeof(struct ListNode));
-            tmp->val = v * sign;
-            tmp->next = NULL;
-            v = 0;
-            sign = 1;
-            if (head == NULL) {
-                head = tmp;
-            } else {
-                cur->next = tmp;
-                cur = tmp;
+    do {
+        char* ch = ps->buf;
+
+        int i = 0;
+        for (; ch[i] != '\0'; i++) {
+            if (ch[i] == '{' || ch[i] == '[' || ch[i] == ' ') {
+                continue;
             }
-            continue;
-        }
 
-        if (ch[i] == '-') {
-            sign = -1;
-            continue;
-        }
-
-        v = v * 10 + ch[i] - '0';
-    }
-
-    if (pos != NULL) {
-        *pos = i + 1;
-    }
-
-    return head;
-}
-
-struct ListNode* newListNode(char ch[], int* pos) {
-    int v = 0;
-    int sign = 1;
-    struct ListNode* head = NULL;
-    struct ListNode* cur = head;
-    int i = *pos;
-    for (; ch[i] != '}' && ch[i] != '\0'; i++) {
-        if (ch[i] == '{' || ch[i] == ' ') {
-            continue;
-        }
-
-        if (ch[i] == ',') {
-            struct ListNode* tmp = (struct ListNode*)malloc(sizeof(struct ListNode));
-            tmp->val = v * sign;
-            tmp->next = NULL;
-            v = 0;
-            sign = 1;
-            if (head == NULL) {
-                head = tmp;
-            } else {
-                cur->next = tmp;
-                cur = tmp;
+            if (ch[i] == ',' || ch[i] == '}' || ch[i] == ']') {
+                struct ListNode* tmp = newListNode(v * sign, NULL);
+                v = 0;
+                sign = 1;
+                if (ans == NULL) {
+                    ans = tmp;
+                    cur = ans;
+                } else {
+                    cur->next = tmp;
+                    cur = tmp;
+                }
+                continue;
             }
-            continue;
+
+            if (ch[i] == '-') {
+                sign = -1;
+                continue;
+            }
+
+            v = v * 10 + ch[i] - '0';
         }
 
-        if (ch[i] == '-') {
-            sign = -1;
-            continue;
-        }
+    } while (status == NOT_FULL_LINE);
 
-        v = v * 10 + ch[i] - '0';
-    }
-
-    if (pos != NULL) {
-        *pos = i + 1;
-    }
-
-    return head;
+    return ans;
 }
 
 struct ListNode** newListNodeArray(char ch[]) {
@@ -143,7 +66,8 @@ struct ListNode** newListNodeArray(char ch[]) {
         }
 
         if (ch[i] == '{') {
-            struct ListNode* head = newListNode(ch, &pos);
+            // 暂不可用
+            struct ListNode* head = newListNode(0, NULL);
             i = pos;
             if (ans == NULL) {
                 ans = malloc(sizeof(struct ListNode*) * capacity);

@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <stdbool.h>
 
 #define LINE_SIZE BUFSIZ
 
@@ -48,18 +47,6 @@ int read(stream* s) {
     }
 
     return FULL_LINE; // 最后一行没有 \n 的情况
-}
-
-typedef void (*handler) (stream*);
-
-bool readline(stream* s, handler f) {
-    int status = -1;
-    do {
-        status = read(s);
-        f(s);
-    } while (status == NOT_FULL_LINE);
-
-    return status == END;
 }
 
 void closeStream(stream* s) {
