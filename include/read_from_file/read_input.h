@@ -9,7 +9,14 @@
 typedef struct {
     FILE* f;
     char buf[LINE_SIZE + 1];
+    int i;
+    int status;
 }stream;
+
+#define UNREAD -1
+#define END 0
+#define FULL_LINE 1
+#define NOT_FULL_LINE 2
 
 int initStream(stream* s) {
 #ifdef INPUT_FILE
@@ -22,31 +29,32 @@ int initStream(stream* s) {
         return 1;
     }
 
+    s->i = 0;
+    s->status = UNREAD;
+
     return 0;
 }
 
-#define END 0
-#define FULL_LINE 1
-#define NOT_FULL_LINE 2
-
-int read(stream* s) {
+void read(stream* s) {
     if (fgets(s->buf, LINE_SIZE + 1, s->f) == NULL) {
         s->buf[0] = '\0';
-        return END; // 读取完毕
+        s->status = END; // 读取完毕
+        return;
     }
 
     int n = strlen(s->buf);
     if (s->buf[n - 1] == '\n') {
         s->buf[n - 1] = '\0';
         // 读取到换行符
-        return FULL_LINE;
+        s->status = FULL_LINE;
+        return;
     }
 
     if (n == LINE_SIZE) {
-        return NOT_FULL_LINE; // 缓存占满了
+        s->status = NOT_FULL_LINE; // 缓存占满了
+        return;
     }
-
-    return FULL_LINE; // 最后一行没有 \n 的情况
+    s->status = FULL_LINE;// 最后一行没有 \n 的情况
 }
 
 void closeStream(stream* s) {

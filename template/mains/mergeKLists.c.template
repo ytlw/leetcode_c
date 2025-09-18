@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <listnode/listnode.c>
+#include <read_from_file/read_input.h>
+
+
+struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2) {
+    if (list1 == NULL) {
+        return list2;
+    }
+
+    if (list2 == NULL) {
+        return list1;
+    }
+
+    struct ListNode* head = NULL;
+    if (list1->val < list2->val) {
+        head = list1;
+        list1 = list1->next;
+    } else {
+        head = list2;
+        list2 = list2->next;
+    }
+
+    struct ListNode* tmp = head;
+
+    while (list1 != NULL && list2 != NULL) {
+        if (list1->val < list2->val) {
+            tmp->next = list1;
+            tmp = list1;
+            list1 = list1->next;
+        } else {
+            tmp->next = list2;
+            tmp = list2;
+            list2 = list2->next;
+        }
+    }
+
+    if (list1 != NULL) {
+        tmp->next = list1;
+    }
+    if (list2 != NULL) {
+        tmp->next = list2;
+    }
+
+    return head;
+}
+
+struct ListNode* mergeKLists(struct ListNode** lists, int listsLen) {
+    int len = listsLen;
+    int pos = 0;
+    while (len > 1) {
+        for (int i = 0; i < len; i += 2) {
+            if (i == len - 1) {
+                lists[pos] = lists[i];
+            } else {
+                lists[pos] = mergeTwoLists(lists[i], lists[i + 1]);;
+            }
+
+            pos++;
+        }
+
+        len = pos;
+        pos = 0;
+    }
+
+    return lists[0];
+}
+
+int main(void) {
+    stream _stream;
+    stream* ps = &_stream;
+    initStream(ps);
+
+    int size;
+    struct ListNode** list = generateListNodeArray(ps, &size);
+
+    struct ListNode* ans = mergeKLists(list, size);
+
+    printListNode(ans);
+
+    free(list);
+    freeListNode(ans);
+    closeStream(ps);
+    return 0;
+}
