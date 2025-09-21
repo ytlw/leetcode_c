@@ -58,8 +58,6 @@ int main(void) {
 
     printListNode(ans);
 
-    freeListNode(head1);
-    freeListNode(head2);
     freeListNode(ans);
     closeStream(ps);
     return 0;
