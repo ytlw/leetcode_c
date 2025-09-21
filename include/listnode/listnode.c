@@ -35,7 +35,10 @@ struct ListNode* generateListNode(stream* ps) {
             }
 
             if (ch[ps->i] == ',' || ch[ps->i] == '}' || ch[ps->i] == ']') {
-                struct ListNode* tmp = newListNode(v * sign, NULL);
+                struct ListNode* tmp = NULL;
+                if (!(ch[ps->i - 1] == '[' && ch[ps->i] == ']' || ch[ps->i - 1] == '{' && ch[ps->i] == '}')) {
+                    tmp = newListNode(v * sign, NULL);
+                }
                 v = 0;
                 sign = 1;
                 if (ans == NULL) {
@@ -68,11 +71,18 @@ struct ListNode* generateListNode(stream* ps) {
 }
 
 struct ListNode** generateListNodeArray(stream* ps, int* size) {
-    struct ListNode** ans = malloc(sizeof(struct ListNode*) * 128);
+    struct ListNode* node = generateListNode(ps);
+    if (node == NULL) {
+        if (strlen(ps->buf) == 0 || ps->buf[0] == '[' && ps->buf[1] == ']') {
+            *size = 0;
+            return NULL;
+        }
+    }
     int capacity = 128;
+    struct ListNode** ans = malloc(sizeof(struct ListNode*) * capacity);
     int i = 0;
-    struct ListNode* node = NULL;
-    while ((node = generateListNode(ps)) != NULL) {
+
+    while (1) {
         if (i == capacity) {
             capacity <<= 1;
             struct ListNode** ans2 = malloc(sizeof(struct ListNode*) * capacity);
@@ -84,9 +94,15 @@ struct ListNode** generateListNodeArray(stream* ps, int* size) {
         }
         ans[i] = node;
         i++;
+        if (ps->i + 1 >= strlen(ps->buf)) {
+            ps->i = 0;
+            break; // ]] 读到倒数第二个 ] 就退出。
+        }
+        node = generateListNode(ps);
     }
 
     *size = i;
+
     for (; i < capacity; i++) {
         ans[i] = NULL;
     }

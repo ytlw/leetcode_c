@@ -25,7 +25,7 @@ int initStream(stream* s) {
     s->f = fopen("in.txt", "r");
 #endif
     if (s->f == NULL) {
-        printf("open in.txt failed, errno: %d\n", strerror(errno));
+        printf("open in.txt failed, errno: %s\n", strerror(errno));
         return 1;
     }
 

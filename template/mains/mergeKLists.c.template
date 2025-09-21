@@ -49,6 +49,9 @@ struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2) {
 
 struct ListNode* mergeKLists(struct ListNode** lists, int listsLen) {
     int len = listsLen;
+    if (len == 0) {
+        return NULL;
+    }
     int pos = 0;
     while (len > 1) {
         for (int i = 0; i < len; i += 2) {
@@ -73,15 +76,18 @@ int main(void) {
     stream* ps = &_stream;
     initStream(ps);
 
-    int size;
-    struct ListNode** list = generateListNodeArray(ps, &size);
+    while (ps->status != END) {
+        int size;
+        struct ListNode** list = generateListNodeArray(ps, &size);
+        struct ListNode* ans = mergeKLists(list, size);
 
-    struct ListNode* ans = mergeKLists(list, size);
+        printListNode(ans);
 
-    printListNode(ans);
+        free(list);
+        freeListNode(ans);
+    }
 
-    free(list);
-    freeListNode(ans);
     closeStream(ps);
+
     return 0;
 }
