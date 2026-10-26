@@ -1,7 +1,9 @@
 {
+    "cmake.configureOnOpen": true,
     "files.associations": {
         "main{,[0-9]}.in": "plaintext_gbk"
     },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "[plaintext_gbk]": {
         "files.encoding": "gbk"
     },
