@@ -4,5 +4,25 @@
     },
     "[plaintext_gbk]": {
         "files.encoding": "gbk"
+    },
+    "cmake.debugConfig": {
+        "setupCommands": [
+            {
+                "description": "设置控制台代码页",
+                "text": "shell chcp 936",
+                "ignoreFailures": false
+            }
+        ],
+        "MIMode": "gdb",
+        "miDebuggerPath": "D:\\x86_64-15.2.0-release-posix-seh-ucrt-rt_v13-rev0\\mingw64\\bin\\gdb.exe"
+    },
+    "terminal.integrated.profiles.windows": {
+        "Git Bash": {
+            "source": "Git Bash",
+            "args": [
+                "--norc",
+                "--login"
+            ]
+        }
     }
 }
